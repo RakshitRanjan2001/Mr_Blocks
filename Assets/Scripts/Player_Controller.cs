@@ -5,10 +5,30 @@ using UnityEngine;
 public class Player_Controller : MonoBehaviour
 {
     public Rigidbody2D rigidbody2d;
+    public GameObject GameWonPanel;
+    public GameObject GamePausedPanel;
     public float speed;
+
+    private bool isGameWon;
+    private bool isGamePaused= false;
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape)){
+            if(isGamePaused==true){
+                isGamePaused = false;
+            }
+            else{
+                isGamePaused = true;
+            }
+            GamePausedPanel.SetActive(isGamePaused);
+            Debug.Log("Game Paused");
+        }
+        
+        if (isGameWon==true || isGamePaused==true){
+            return;
+        }
+
         if (Input.GetAxis("Horizontal") > 0) // it is positive
         {
             rigidbody2d.velocity = new Vector2(speed, 0f);
@@ -30,6 +50,7 @@ public class Player_Controller : MonoBehaviour
             rigidbody2d.velocity = new Vector2(0f, 0f);
             //stop
         }
+        
 
         
     }
@@ -38,6 +59,8 @@ public class Player_Controller : MonoBehaviour
         if (other.tag == "Door")
         {
             Debug.Log("Level Completed!!");
+            GameWonPanel.SetActive(true);
+            isGameWon = true;
         }
     }
 }
