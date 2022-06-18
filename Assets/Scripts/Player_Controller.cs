@@ -1,15 +1,17 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player_Controller : MonoBehaviour
 {
     public Rigidbody2D rigidbody2d;
     public GameObject GameWonPanel;
     public GameObject GamePausedPanel;
+    public GameObject GameLostPanel;
     public float speed;
 
-    private bool isGameWon;
+    private bool isGameOver;
     private bool isGamePaused= false;
 
     void Update()
@@ -25,7 +27,7 @@ public class Player_Controller : MonoBehaviour
             Debug.Log("Game Paused");
         }
         
-        if (isGameWon==true || isGamePaused==true){
+        if (isGameOver==true || isGamePaused==true){
             return;
         }
 
@@ -50,9 +52,6 @@ public class Player_Controller : MonoBehaviour
             rigidbody2d.velocity = new Vector2(0f, 0f);
             //stop
         }
-        
-
-        
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -60,7 +59,24 @@ public class Player_Controller : MonoBehaviour
         {
             Debug.Log("Level Completed!!");
             GameWonPanel.SetActive(true);
-            isGameWon = true;
+            isGameOver = true;
+            rigidbody2d.velocity = new Vector2(0f, 0f);
         }
+        else if (other.tag == "Enemy")
+        {
+            Debug.Log("Level Lost");
+            GameLostPanel.SetActive(true);
+            isGameOver = true;
+            rigidbody2d.velocity = new Vector2(0f, 0f);
+        }
+        else if (other.tag == "Wall")
+        {
+            rigidbody2d.velocity = new Vector2(0f, 0f);
+        }
+    }
+
+    public void RestartGame(int sce){
+        SceneManager.LoadScene(sce);
+        Debug.Log("Restart Level");
     }
 }
